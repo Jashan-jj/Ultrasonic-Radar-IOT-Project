@@ -1,0 +1,336 @@
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:math' as math;
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        // Use dark theme and set background color to black
+        scaffoldBackgroundColor: Colors.black,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Ultrasonic Radar',
+            style: TextStyle(
+                color: Color.fromARGB(255, 31, 71, 3),
+                fontSize: 30), // Change text color to green
+          ),
+          centerTitle: true, // Center the title
+        ),
+        body: SensorDataDisplay(),
+      ),
+    );
+  }
+}
+
+class SensorDataDisplay extends StatefulWidget {
+  @override
+  _SensorDataDisplayState createState() => _SensorDataDisplayState();
+}
+
+class _SensorDataDisplayState extends State<SensorDataDisplay> {
+  String ultrasonicDistance = 'Loading...';
+  String angleValue = 'Loading...';
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSensorData();
+    timer =
+        Timer.periodic(Duration(seconds: 0), (Timer t) => fetchSensorData());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> fetchSensorData() async {
+    const apiUrl =
+        'https://api.thingspeak.com/channels/2593832/feeds.json?api_key=QMWSV08Z988VHNTV&results=1';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          ultrasonicDistance = data['feeds'][0]['field1'] ?? 'N/A';
+          angleValue = data['feeds'][0]['field2'] ?? 'N/A';
+        });
+      } else {
+        setState(() {
+          ultrasonicDistance = 'Error fetching data';
+          angleValue = 'Error fetching data';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        ultrasonicDistance = 'Error fetching data';
+        angleValue = 'Error fetching data';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomPaint(
+          size: Size(400, 370), // Width: 900, Height: 500
+          painter: ProtractorPainter(
+            ultrasonicDistance: ultrasonicDistance,
+            angleValue: angleValue,
+          ),
+        ),
+        SizedBox(height: 35),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              padding: EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Distance:',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    '$ultrasonicDistance cm',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Angle:',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    '$angleValue degrees',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class ProtractorPainter extends CustomPainter {
+  final Paint _paint = Paint()
+    ..color = const Color.fromARGB(255, 61, 98, 18)
+    ..strokeWidth = 2;
+
+  final Paint_lightGreenPaint = Paint()
+    ..color = const Color.fromARGB(255, 20, 7, 7).withOpacity(0.10)
+    ..style = PaintingStyle.fill;
+
+  final Paint _redPaint = Paint()
+    ..color = const Color.fromARGB(255, 178, 12, 0)
+    ..strokeWidth = 2;
+
+  final String ultrasonicDistance;
+  final String angleValue;
+
+  ProtractorPainter(
+      {required this.ultrasonicDistance, required this.angleValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    double radius = size.width / 2;
+    Offset center = Offset(radius, radius);
+
+    // Draw the half-circle
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      math.pi, // Start at 180 degrees (Math.pi)
+      math.pi, // Sweep 180 degrees
+      false,
+      _paint,
+    );
+
+    // Draw the distance text from the center edge
+    for (int i = 0; i <= 4; i++) {
+      TextPainter distancePainter = TextPainter(
+        text: TextSpan(
+          text: ' ${i * 5}\ncm',
+          style:
+              TextStyle(color: Color.fromARGB(255, 3, 117, 22), fontSize: 18),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      distancePainter.layout();
+      double distanceX = radius - (i * 50);
+      double distanceY = radius - distancePainter.width / (-5);
+      distancePainter.paint(canvas, Offset(distanceX, distanceY));
+    }
+
+    // Draw eight semi-circles with a distance from the center edge of the protractor
+    for (int i = 1; i <= 8; i++) {
+      double innerRadius = radius - (i * 60);
+      _paint.color = Color.fromARGB(255, 0, 0, 0).withOpacity(0.15);
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: innerRadius),
+        math.pi, // Start at 180 degrees (Math.pi)
+        math.pi, // Sweep 180 degrees
+        false,
+        _paint,
+      );
+    }
+
+    // Draw the lines and labels
+    for (int i = 0; i <= 18; i++) {
+      double angle = math.pi + (i * math.pi / 18);
+      double x = radius + radius * math.cos(angle);
+      double y = radius + radius * math.sin(angle);
+
+      // Draw the lines from the center to the edge of the protractor
+      canvas.drawLine(
+        center,
+        Offset(x, y),
+        _paint..color = Color.fromARGB(255, 104, 192, 3),
+      );
+
+      // Draw the text labels for each 10-degree increment
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: '${i * 10}°',
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      double labelX = radius + (radius - 10) * math.cos(angle);
+      double labelY = radius + (radius - 10) * math.sin(angle);
+      textPainter.paint(canvas, Offset(labelX - 10, labelY - 10));
+
+      // Draw boxes with distances at each 10-degree increment
+      drawDistanceBox(canvas, angle, radius, _paint, i);
+    }
+
+    // Draw the red line and dot if the ultrasonic sensor detects an object
+    if (ultrasonicDistance != 'N/A' && angleValue != 'N/A') {
+      int currentAngle = int.parse(angleValue);
+      double angle = math.pi + (currentAngle * math.pi / 180);
+      double distance = double.tryParse(ultrasonicDistance) ?? 0;
+      double normalizedDistance = normalizeDistance(distance, radius);
+
+      double x = radius + normalizedDistance * math.cos(angle);
+      double y = radius + normalizedDistance * math.sin(angle);
+
+      // Draw the red line
+      canvas.drawLine(
+        center,
+        Offset(x, y),
+        _redPaint,
+      );
+
+      // Draw the red dot at the end of the line
+      canvas.drawCircle(Offset(x, y), 10, _redPaint);
+
+      // Draw the distance text near the dot
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: '$ultrasonicDistance cm',
+          style: TextStyle(color: Colors.red, fontSize: 14),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(x + 10, y + 10));
+    }
+  }
+
+  double normalizeDistance(double distance, double radius) {
+    // Assuming the maximum distance of interest is 25 cm, corresponding to the radius
+    double maxDistance = 20;
+    return (distance / maxDistance) * radius;
+  }
+
+  void drawDistanceBox(
+      Canvas canvas, double angle, double radius, Paint paint, int i) {
+    // Calculate coordinates for placing the distance box
+    double boxCenterX = radius + (radius - (-60)) * math.cos(angle);
+    double boxCenterY = radius + (radius - (-50)) * math.sin(angle);
+
+    // Example distance (replace with your actual distance logic)
+    String distance = ultrasonicDistance;
+    int currentAngle = int.parse(angleValue);
+
+    // Check if the current angle matches the angle data
+    if (i * 10 == currentAngle) {
+      // Change box color to white
+      paint.color = Color.fromARGB(255, 205, 203, 203);
+
+      // Define the rounded rectangle with curved edges
+      RRect boxRect = RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(boxCenterX, boxCenterY),
+          width: 120, // Adjusted width for "Distance: <distance> cm"
+          height: 50, // Adjusted height for "Distance: <distance> cm"
+        ),
+        Radius.circular(5), // Adjust the radius for the curve
+      );
+      canvas.drawRRect(boxRect, paint);
+
+      // Draw the text inside the box
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+          text: 'Distance: $distance cm\nAngle: $currentAngle degrees',
+          style: TextStyle(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              fontSize: 14), // Adjust font size
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      double textX = boxCenterX - textPainter.width / 2;
+      double textY = boxCenterY - textPainter.height / 2;
+      textPainter.paint(canvas, Offset(textX, textY));
+
+      // Restore original paint color
+      paint.color = Color.fromARGB(255, 76, 123, 23);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
