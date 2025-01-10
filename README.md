@@ -5,8 +5,9 @@
 This project utilizes an Ultrasonic Sensor (HC-SR04) with an ESP32 microcontroller to measure distances and angles. The collected data is uploaded to ThingSpeak, an IoT analytics platform that allows real-time data visualization. The sensor's distance readings are captured and transmitted wirelessly to ThingSpeak, where they can be monitored and analyzed remotely. Additionally, a Flutter-based mobile app is used for local real-time visualization.
 The project is ideal for IoT applications like distance measurement, obstacle detection, or smart home automation.
 
-![circuit](https://github.com/user-attachments/assets/be3003e9-ae3d-4f57-adc6-794e680245e7)
-![ultrasonic](https://github.com/user-attachments/assets/b3cb81eb-9ddc-443f-b8dd-501c59ac5b21)
+![img8](https://github.com/user-attachments/assets/a7a8f734-58cc-4ee3-8864-55023ba25973)
+![img4](https://github.com/user-attachments/assets/52df05d1-73c7-45f3-ba22-843ae73cfcb9)
+
 
 ### **Features**
 
