@@ -1,54 +1,129 @@
-![project__pages-to-jpg-0001](https://github.com/user-attachments/assets/00d144e4-d714-4045-8085-06b5fcd2c640)
-# Ultrasonic-Radar-IOT-Project
-## **About the Project**
+![project__pages-to-jpg-0001](https://github.com/user-attachments/assets/3fc82121-d7e7-4db3-947f-d35512ba9838)
+# Ultrasonic Radar System 🚀  
+A smart IoT-based distance and obstacle detection system using the **HC-SR04 Ultrasonic Sensor**, **ESP32 Microcontroller**, and **SG90 Servo Motor**. The project leverages **ThingSpeak** for cloud data visualization and a **Flutter-based mobile app** for real-time monitoring, making it ideal for IoT applications such as distance measurement, obstacle detection, and smart home automation.  
 
-This project utilizes an Ultrasonic Sensor (HC-SR04) with an ESP32 microcontroller to measure distances and angles. The collected data is uploaded to ThingSpeak, an IoT analytics platform that allows real-time data visualization. The sensor's distance readings are captured and transmitted wirelessly to ThingSpeak, where they can be monitored and analyzed remotely. Additionally, a Flutter-based mobile app is used for local real-time visualization.
-The project is ideal for IoT applications like distance measurement, obstacle detection, or smart home automation.
+---
 
-![img8](https://github.com/user-attachments/assets/a7a8f734-58cc-4ee3-8864-55023ba25973)
-![img4](https://github.com/user-attachments/assets/52df05d1-73c7-45f3-ba22-843ae73cfcb9)
+## **🌟 About the Project**  
+
+This project integrates an ultrasonic sensor with an ESP32 microcontroller to measure distances and angles. The data is uploaded to **ThingSpeak**, enabling cloud-based analytics and remote monitoring. A **Flutter-based mobile app** provides users with real-time visualization of sensor readings locally.  
+
+Key applications include:  
+- Distance measurement.  
+- Obstacle detection for robotics.  
+- Smart home automation.
+![WhatsApp Image 2024-11-23 at 13 28 29 (2)](https://github.com/user-attachments/assets/ea13844d-9ef4-4581-88d1-3a38debbab16)
 
 
-### **Features**
+---
 
-* Measures distance using the HC-SR04 Ultrasonic Sensor.  
-* Controls the SG90 Servo Motor based on distance measurements.  
-* Uploads sensor data to ThingSpeak for cloud visualization.  
-* Real-time data visualization through a Flutter-based mobile app.  
+## **✨ Features**  
 
-### **Tech Stack**
+- **Accurate Distance Measurement**: Uses the HC-SR04 Ultrasonic Sensor.  
+- **Motor Control**: Rotates the SG90 Servo Motor based on sensor readings.  
+- **Cloud Integration**: Real-time data upload to **ThingSpeak** for remote visualization.  
+- **Mobile App**: Intuitive real-time data visualization using a Flutter-based application.  
+- **IoT-Ready Design**: Compact, efficient, and scalable for various use cases.  
 
-* Arduino IDE: For coding the ESP32 and controlling the servo motor.  
-* ThingSpeak: For cloud data storage and visualization.  
-* Flutter: For mobile app UI and real-time visualization.  
-* ESP32: Microcontroller for sensor input, motor control, and data transmission.  
+---
 
-### **Circuit Connections:**  
-#### HC-SR04 Ultrasonic Sensor
+## **🛠️ Tech Stack**  
 
-- VCC: Connect to 5V on ESP32.  
-- GND: Connect to GND on ESP32.  
-- TrigPin: Connect to GPIO 5 on ESP32.  
-- EchoPin: Connect to GPIO 18 on ESP32.  
+- **Arduino IDE**: For programming the ESP32 and sensor control.  
+- **ThingSpeak**: IoT analytics platform for data storage and visualization.  
+- **Flutter**: For creating a user-friendly mobile application interface.  
+- **ESP32**: Microcontroller for data processing and communication.  
 
-#### SG90 Servo Motor
+---
 
-- VCC (Red wire): Connect to 3.3V on ESP32.  
-- GND (Brown wire): Connect to GND on ESP32.  
-- Control Pin (Orange wire): Connect to GPIO 16 on ESP32.  
+## **🔌 Circuit Connections**  
 
-#### ESP32 Microcontroller
+### **1. HC-SR04 Ultrasonic Sensor**  
 
-Ensure the ESP32 is powered through a USB or external power source, especially when using the servo motor, which may draw more current.
+| **Pin**       | **Connection to ESP32** |  
+|---------------|--------------------------|  
+| VCC           | 5V                      |  
+| GND           | GND                     |  
+| TrigPin       | GPIO 5                  |  
+| EchoPin       | GPIO 18                 |  
 
-![ctdg](https://github.com/user-attachments/assets/28e3815a-0f46-414d-b773-f236438e0ef0)
-### **How to Run the Project**
-#### Hardware Setup:
-Connect the HC-SR04 Ultrasonic Sensor and SG90 Servo Motor to the ESP32 as per the above connections.
-#### ThingSpeak Setup:
-Create a channel on ThingSpeak and configure the Arduino code with your Channel ID and Write API Key.
-#### Arduino Code: 
-Upload the provided code to the ESP32 using the Arduino IDE.
-#### Flutter App: 
-The mobile app displays the data in real-time and can be run on any Android or iOS device.
+---
 
+### **2. SG90 Servo Motor**  
+
+| **Wire Color** | **Connection to ESP32** |  
+|----------------|--------------------------|  
+| Red (VCC)      | 3.3V                    |  
+| Brown (GND)    | GND                     |  
+| Orange (Control)| GPIO 16                |  
+
+---
+![WhatsApp Image 2024-11-24 at 11 12 09 (1)](https://github.com/user-attachments/assets/d651b769-d3b6-4602-a633-63a8968ae992)
+
+
+### **3. ESP32 Microcontroller**  
+
+- Ensure the ESP32 is powered via USB or an external source (e.g., power bank).  
+- Servo motors may require additional power to avoid overloading the ESP32.  
+
+---
+
+## **🚀 How to Run the Project**  
+
+### **Step 1: Hardware Setup**  
+1. Assemble the hardware components as per the circuit connections.  
+2. Verify connections to avoid short circuits.  
+
+### **Step 2: ThingSpeak Setup**  
+1. Create an account on [ThingSpeak](https://thingspeak.com).  
+2. Set up a new channel and note down the **Channel ID** and **Write API Key**.  
+
+### **Step 3: Arduino Code**  
+1. Clone this repository.  
+2. Open the provided Arduino code in the **Arduino IDE**.  
+3. Update the code with your Wi-Fi credentials and ThingSpeak API Key.  
+4. Upload the code to the ESP32 using a USB connection.  
+
+### **Step 4: Flutter App**  
+1. Download the mobile app from the **repository link** or compile it using Flutter.  
+2. Launch the app and start monitoring sensor data in real time.  
+
+---
+
+## **📈 Visualizations**  
+
+### **1. ThingSpeak Visualization**  
+- View real-time and historical data on the ThingSpeak dashboard.  
+- Analyze data trends for distances and angles.
+  ![Screenshot_2024_1120_111638](https://github.com/user-attachments/assets/f0a556ae-e2af-4c1b-995f-4069e41f9d51) ![Screenshot_2024_1120_111658](https://github.com/user-attachments/assets/1c406f3d-38ba-4ade-9c07-3d8e855fd48b)
+
+### **2. Mobile App**  
+- Intuitive and interactive real-time sensor data display.  
+- Easily monitor environmental changes through the app.  
+![WhatsApp Image 2024-11-23 at 13 28 27](https://github.com/user-attachments/assets/d557502e-e13e-4377-a176-66764a64c449)
+
+---
+
+## **🎯 Future Enhancements**  
+
+- **AI Integration**: Adding predictive algorithms for obstacle detection.  
+- **Enhanced Visualization**: Web-based dashboards for broader access.  
+- **Multiple Sensor Support**: Integrating additional sensors for extended functionality.  
+- **Energy Optimization**: Improving power efficiency for long-term deployments.  
+
+---
+
+## **📜 License**  
+This project is licensed under the MIT License. See the `LICENSE` file for more details.  
+
+---
+
+## **🤝 Contributions**  
+Contributions are welcome! Feel free to open an issue or submit a pull request.  
+
+---
+
+## **📧 Contact**  
+For inquiries or feedback, reach out to:  
+**[Jashanpreet Singh]**  
+**[jashan14729@gmail.com]**  
